@@ -6,15 +6,19 @@
 }
 
 :root {
-    --primary-color: #2563eb;
-    --secondary-color: #64748b;
-    --accent-color: #f59e0b;
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --background: #ffffff;
-    --surface: #f8fafc;
-    --border: #e2e8f0;
-    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --primary-color: #60a5fa;
+    --secondary-color: #94a3b8;
+    --accent-color: #fbbf24;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --background: #0f172a;
+    --surface: #1e293b;
+    --border: #334155;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    --card-bg: #1e293b;
+    --card-hover: #334155;
+    --navbar-bg: rgba(15, 23, 42, 0.95);
+    --hero-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
 body {
@@ -71,12 +75,12 @@ p {
 
 .btn.primary {
     background-color: var(--primary-color);
-    color: white;
+    color: var(--background);
 }
 
 .btn.primary:hover {
-    background-color: #1d4ed8;
-    transform: translateY(-2px);
+    background-color: #3b82f6;
+    color: var(--background);
 }
 
 .btn.secondary {
@@ -87,8 +91,17 @@ p {
 
 .btn.secondary:hover {
     background-color: var(--primary-color);
-    color: white;
+    color: var(--background);
     transform: translateY(-2px);
+}
+
+/* Disabled button styling */
+.btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--secondary-color);
+    color: var(--text-secondary);
+    border-color: var(--secondary-color);
 }
 
 /* Navigation */
@@ -96,12 +109,13 @@ p {
     position: fixed;
     top: 0;
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: var(--navbar-bg);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     z-index: 1000;
     padding: 1rem 0;
     box-shadow: var(--shadow);
+    border-bottom: 1px solid var(--border);
 }
 
 .nav-container {
@@ -192,7 +206,7 @@ p {
     min-height: 100vh;
     display: flex;
     align-items: center;
-    background: linear-gradient(135deg, var(--surface) 0%, #e0e7ff 100%);
+    background: var(--hero-bg);
     padding-top: 80px;
 }
 
@@ -219,7 +233,7 @@ p {
     height: 300px;
     border-radius: 50%;
     object-fit: cover;
-    border: 6px solid white;
+    border: 6px solid var(--surface);
     box-shadow: var(--shadow);
 }
 
@@ -278,7 +292,8 @@ p {
     justify-content: center;
     width: 40px;
     height: 40px;
-    background-color: white;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 50%;
     color: var(--text-secondary);
     transition: all 0.3s ease;
@@ -287,8 +302,9 @@ p {
 
 .social-link:hover {
     background-color: var(--primary-color);
-    color: white;
+    color: var(--background);
     transform: translateY(-2px);
+    border-color: var(--primary-color);
 }
 
 .hero-buttons {
@@ -344,9 +360,16 @@ section {
 .stat {
     text-align: center;
     padding: 2rem;
-    background-color: white;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: 12px;
     box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.stat:hover {
+    background-color: var(--card-hover);
+    transform: translateY(-2px);
 }
 
 .stat h3 {
@@ -372,10 +395,17 @@ section {
 }
 
 .skill-category {
-    background-color: white;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
     padding: 2rem;
     border-radius: 12px;
     box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.skill-category:hover {
+    background-color: var(--card-hover);
+    transform: translateY(-2px);
 }
 
 .skill-category h3 {
@@ -396,12 +426,15 @@ section {
     align-items: center;
     padding: 1rem;
     background-color: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .skill-item:hover {
     transform: translateY(-5px);
+    background-color: var(--card-hover);
+    border-color: var(--primary-color);
 }
 
 .skill-item i {
@@ -418,7 +451,7 @@ section {
 
 /* Projects Section */
 .projects {
-    background-color: var(--surface);
+    background-color: var(--background);
 }
 
 .projects-grid {
@@ -428,15 +461,18 @@ section {
 }
 
 .project-card {
-    background-color: white;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: var(--shadow);
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .project-card:hover {
     transform: translateY(-5px);
+    border-color: var(--primary-color);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
 }
 
 .project-image {
@@ -478,6 +514,7 @@ section {
 .project-tech span {
     background-color: var(--surface);
     color: var(--primary-color);
+    border: 1px solid var(--border);
     padding: 0.25rem 0.75rem;
     border-radius: 16px;
     font-size: 0.75rem;
@@ -489,9 +526,14 @@ section {
     gap: 1rem;
 }
 
+/* Improve project links styling */
+.project-links a {
+    text-decoration: none;
+}
+
 /* Experience Section */
 .experience {
-    background-color: var(--background);
+    background-color: var(--surface);
 }
 
 .timeline {
@@ -525,7 +567,7 @@ section {
     height: 18px;
     background-color: var(--primary-color);
     border-radius: 50%;
-    border: 4px solid white;
+    border: 4px solid var(--surface);
     box-shadow: var(--shadow);
 }
 
@@ -540,10 +582,17 @@ section {
 }
 
 .timeline-content {
-    background-color: white;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
     padding: 1.5rem;
     border-radius: 12px;
     box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.timeline-content:hover {
+    background-color: var(--card-hover);
+    transform: translateX(5px);
 }
 
 .timeline-content h3 {
@@ -568,7 +617,7 @@ section {
 
 /* Certifications Section */
 .certifications {
-    background-color: var(--surface);
+    background-color: var(--background);
 }
 
 .certifications-grid {
@@ -578,16 +627,19 @@ section {
 }
 
 .certification-card {
-    background-color: white;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
     padding: 2rem;
     border-radius: 12px;
     text-align: center;
     box-shadow: var(--shadow);
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .certification-card:hover {
     transform: translateY(-5px);
+    background-color: var(--card-hover);
+    border-color: var(--primary-color);
 }
 
 .cert-icon {
@@ -608,7 +660,7 @@ section {
 .cert-date {
     display: inline-block;
     background-color: var(--primary-color);
-    color: white;
+    color: var(--background);
     padding: 0.25rem 0.75rem;
     border-radius: 16px;
     font-size: 0.75rem;
@@ -617,7 +669,7 @@ section {
 
 /* Contact Section */
 .contact {
-    background-color: var(--background);
+    background-color: var(--surface);
 }
 
 .contact-content {
@@ -642,7 +694,7 @@ section {
     width: 50px;
     height: 50px;
     background-color: var(--primary-color);
-    color: white;
+    color: var(--background);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -659,7 +711,8 @@ section {
 }
 
 .contact-form {
-    background-color: white;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
     padding: 2rem;
     border-radius: 12px;
     box-shadow: var(--shadow);
@@ -674,15 +727,24 @@ section {
     width: 100%;
     padding: 12px 16px;
     border: 2px solid var(--border);
+    background-color: var(--surface);
+    color: var(--text-primary);
     border-radius: 8px;
     font-size: 1rem;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
     border-color: var(--primary-color);
+    background-color: var(--card-bg);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--text-secondary);
 }
 
 .form-group textarea {
@@ -691,8 +753,9 @@ section {
 
 /* Footer */
 footer {
-    background-color: var(--text-primary);
-    color: white;
+    background-color: var(--background);
+    border-top: 1px solid var(--border);
+    color: var(--text-primary);
     padding: 2rem 0;
     text-align: center;
 }
@@ -709,12 +772,51 @@ footer .container {
 }
 
 .footer-social .social-link {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
 }
 
 .footer-social .social-link:hover {
     background-color: var(--primary-color);
+    color: var(--background);
+    border-color: var(--primary-color);
+}
+
+/* Additional dark theme improvements */
+/* Enhance scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Selection styling */
+::selection {
+    background: var(--primary-color);
+    color: var(--background);
+}
+
+/* Improve focus visibility */
+*:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Responsive Design */
@@ -724,7 +826,8 @@ footer .container {
         left: -100%;
         top: 70px;
         flex-direction: column;
-        background-color: white;
+        background-color: var(--surface);
+        border: 1px solid var(--border);
         width: 100%;
         text-align: center;
         transition: 0.3s;
