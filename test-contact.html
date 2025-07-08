@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .device-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-form">
+        <h2>Contact Form Mobile Test</h2>
+        
+        <div class="device-info">
+            <strong>Device Info:</strong><br>
+            <span id="deviceInfo"></span>
+        </div>
+
+        <form id="testForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="Test User" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="test@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" value="Test Message" required>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" rows="4" required>This is a test message from the contact form.</textarea>
+            </div>
+
+            <button type="submit">Test Email Opening</button>
+        </form>
+
+        <div id="result" style="margin-top: 20px; padding: 15px; border-radius: 4px; display: none;"></div>
+    </div>
+
+    <script>
+        // Display device info
+        const deviceInfo = document.getElementById('deviceInfo');
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const userAgent = navigator.userAgent;
+        
+        deviceInfo.innerHTML = `
+            Mobile: ${isMobile ? 'Yes' : 'No'}<br>
+            User Agent: ${userAgent}<br>
+            Platform: ${navigator.platform}
+        `;
+
+        // Handle form submission
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const subject = formData.get('subject');
+            const message = formData.get('message');
+            
+            // Create mailto link
+            const emailSubject = `Portfolio Contact: ${subject}`;
+            const emailBody = `Hi Moulik,
+
+I'm reaching out through your portfolio website.
+
+From: ${name}
+Email: ${email}
+Subject: ${subject}
+
+Message:
+${message}
+
+---
+This message was sent through your portfolio contact form.
+
+Best regards,
+${name}`;
+            
+            const mailtoLink = `mailto:molijindal17@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            
+            // Show result
+            const result = document.getElementById('result');
+            result.style.display = 'block';
+            result.style.backgroundColor = '#d4edda';
+            result.style.color = '#155724';
+            result.style.border = '1px solid #c3e6cb';
+            result.innerHTML = `
+                <strong>Test Results:</strong><br>
+                Mailto Link Generated: <a href="${mailtoLink}" target="_blank">Click to test</a><br>
+                Link Length: ${mailtoLink.length} characters<br>
+                Mobile Device: ${isMobile ? 'Yes' : 'No'}
+            `;
+            
+            // Try to open email client
+            try {
+                if (isMobile) {
+                    // Mobile approach
+                    const link = document.createElement('a');
+                    link.href = mailtoLink;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    // Desktop approach
+                    window.location.href = mailtoLink;
+                }
+                
+                result.innerHTML += '<br><strong>Email client should open now...</strong>';
+            } catch (error) {
+                result.style.backgroundColor = '#f8d7da';
+                result.style.color = '#721c24';
+                result.style.border = '1px solid #f5c6cb';
+                result.innerHTML += `<br><strong>Error:</strong> ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

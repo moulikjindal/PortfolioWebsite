@@ -147,31 +147,8 @@ ${name}`;
         
         // Simulate processing delay for better UX
         setTimeout(() => {
-            try {
-                // Open email client
-                window.location.href = mailtoLink;
-                
-                showNotification('Email client opened successfully! Please send the email to complete your message.', 'success');
-                
-                // Reset form after successful submission
-                setTimeout(() => {
-                    contactForm.reset();
-                    showNotification('Form cleared. Thank you for reaching out!', 'info');
-                }, 2000);
-                
-            } catch (error) {
-                console.error('Email client error:', error);
-                showNotification('Unable to open email client. Please copy the email address: molijindal17@gmail.com', 'error');
-                
-                // Fallback: copy email to clipboard
-                navigator.clipboard.writeText('molijindal17@gmail.com').then(() => {
-                    showNotification('Email address copied to clipboard!', 'info');
-                }).catch(() => {
-                    console.log('Clipboard not available');
-                });
-            }
-            
-            resetSubmitButton(submitBtn);
+            const formDataForIntent = { subject, message, name, email };
+            openEmailClient(mailtoLink, contactForm, submitBtn, formDataForIntent);
         }, 1000);
     });
 }
@@ -340,3 +317,320 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     }
 });
+
+// Enhanced email client opening function for better mobile compatibility
+function openEmailClient(mailtoLink, contactForm, submitBtn, formData) {
+    let emailOpened = false;
+    
+    // Function to handle successful email opening
+    const handleEmailSuccess = () => {
+        if (!emailOpened) {
+            emailOpened = true;
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                showNotification('Opening your email app... If it doesn\'t open automatically, please check your email app manually.', 'success');
+            } else {
+                showNotification('Email client opened successfully! Please send the email to complete your message.', 'success');
+            }
+            
+            // Reset form after successful submission
+            setTimeout(() => {
+                contactForm.reset();
+                showNotification('Form cleared. Thank you for reaching out!', 'info');
+            }, 2000);
+        }
+        resetSubmitButton(submitBtn);
+    };
+    
+    // Function to handle email opening failure
+    const handleEmailFailure = () => {
+        if (!emailOpened) {
+            showNotification('Unable to open email client. Please copy the email address: molijindal17@gmail.com', 'error');
+            
+            // Fallback: copy email to clipboard
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText('molijindal17@gmail.com').then(() => {
+                    showNotification('Email address copied to clipboard!', 'info');
+                }).catch(() => {
+                    console.log('Clipboard not available');
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = 'molijindal17@gmail.com';
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showNotification('Email address copied to clipboard!', 'info');
+                } catch (err) {
+                    console.log('Copy failed');
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+        resetSubmitButton(submitBtn);
+    };
+    
+    // Detect if we're on a mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const mobileOS = getMobileOS();
+    
+    try {
+        if (isMobile) {
+            // Mobile-specific handling
+            const link = document.createElement('a');
+            link.href = mailtoLink;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            
+            // Add event listeners to detect if email client opens
+            const startTime = Date.now();
+            let fallbackTriggered = false;
+            
+            // Listen for visibility change (common when email app opens)
+            const handleVisibilityChange = () => {
+                if (document.hidden) {
+                    // Page became hidden, likely email client opened
+                    setTimeout(() => {
+                        if (!document.hidden) {
+                            handleEmailSuccess();
+                        }
+                    }, 100);
+                    document.removeEventListener('visibilitychange', handleVisibilityChange);
+                }
+            };
+            
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            
+            // Listen for page blur (another indicator email client opened)
+            const handleBlur = () => {
+                setTimeout(() => {
+                    if (Date.now() - startTime > 500) {
+                        handleEmailSuccess();
+                    }
+                }, 100);
+                window.removeEventListener('blur', handleBlur);
+            };
+            
+            window.addEventListener('blur', handleBlur);
+            
+            // Try to open email client
+            try {
+                link.click();
+                logEmailAttempt('mobile-link-click', true);
+            } catch (e) {
+                logEmailAttempt('mobile-link-click', false, e);
+                // If click fails, try alternative methods
+                openEmailWithFallbacks(mailtoLink, formData);
+            }
+            
+            // Cleanup and fallback after timeout
+            setTimeout(() => {
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
+                window.removeEventListener('blur', handleBlur);
+                if (link.parentNode) {
+                    document.body.removeChild(link);
+                }
+                
+                if (!emailOpened && !fallbackTriggered) {
+                    fallbackTriggered = true;
+                    // If no indicators of email client opening, try alternative approach
+                    try {
+                        openEmailWithFallbacks(mailtoLink, formData);
+                        // Give it a bit more time
+                        setTimeout(() => {
+                            if (!emailOpened) {
+                                handleEmailSuccess(); // Assume success to avoid double fallback
+                            }
+                        }, 1000);
+                    } catch (error) {
+                        handleEmailFailure();
+                    }
+                }
+            }, 2000);
+            
+        } else {
+            // Desktop handling
+            const startTime = Date.now();
+            
+            // Listen for page blur (email client opening)
+            const handleBlur = () => {
+                setTimeout(() => {
+                    if (Date.now() - startTime > 500) {
+                        handleEmailSuccess();
+                    }
+                }, 100);
+                window.removeEventListener('blur', handleBlur);
+            };
+            
+            window.addEventListener('blur', handleBlur);
+            
+            // Open email client
+            window.location.href = mailtoLink;
+            
+            // Cleanup after timeout
+            setTimeout(() => {
+                window.removeEventListener('blur', handleBlur);
+                if (!emailOpened) {
+                    handleEmailSuccess(); // Assume success on desktop
+                }
+            }, 1500);
+        }
+    } catch (error) {
+        console.error('Email client error:', error);
+        handleEmailFailure();
+    }
+}
+
+// Debug logging for mobile email client issues
+function logEmailAttempt(method, success, error = null) {
+    const logData = {
+        method,
+        success,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        mobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+        os: getMobileOS()
+    };
+    
+    if (error) {
+        logData.error = error.message || error;
+    }
+    
+    console.log('Email client attempt:', logData);
+}
+
+// Android Gmail intent handler for better compatibility
+function createGmailIntent(subject, body, recipient) {
+    const baseIntent = 'intent://send?';
+    const params = new URLSearchParams({
+        'android.intent.extra.EMAIL': recipient,
+        'android.intent.extra.SUBJECT': subject,
+        'android.intent.extra.TEXT': body,
+        'android.intent.type': 'text/plain'
+    });
+    
+    const intentEnd = '#Intent;scheme=mailto;package=com.google.android.gm;end';
+    return baseIntent + params.toString() + intentEnd;
+}
+
+// Universal email opening function with multiple fallbacks
+function openEmailWithFallbacks(mailtoLink, formData) {
+    const approaches = [
+        // Standard mailto
+        () => window.location.href = mailtoLink,
+        
+        // Try with location.assign
+        () => window.location.assign(mailtoLink),
+        
+        // Try with a temporary link click
+        () => {
+            const tempLink = document.createElement('a');
+            tempLink.href = mailtoLink;
+            tempLink.target = '_blank';
+            tempLink.rel = 'noopener noreferrer';
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            document.body.removeChild(tempLink);
+        },
+        
+        // Android-specific Gmail intent (if on Android)
+        () => {
+            if (getMobileOS() === 'Android') {
+                const gmailIntent = createGmailIntent(
+                    formData.subject,
+                    formData.message,
+                    'molijindal17@gmail.com'
+                );
+                window.location.href = gmailIntent;
+            }
+        }
+    ];
+    
+    let currentApproach = 0;
+    const tryNextApproach = () => {
+        if (currentApproach < approaches.length) {
+            try {
+                approaches[currentApproach]();
+                currentApproach++;
+                return true;
+            } catch (error) {
+                console.log(`Approach ${currentApproach} failed:`, error);
+                currentApproach++;
+                if (currentApproach < approaches.length) {
+                    setTimeout(tryNextApproach, 100);
+                }
+                return false;
+            }
+        }
+        return false;
+    };
+    
+    return tryNextApproach();
+}
+
+// Enhanced mobile detection
+function getMobileOS() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        return 'iOS';
+    }
+    
+    if (/android/i.test(userAgent)) {
+        return 'Android';
+    }
+    
+    return 'Other';
+}
+
+// Alternative email opening method for stubborn mobile browsers
+function tryAlternativeEmailOpening(mailtoLink) {
+    const mobileOS = getMobileOS();
+    
+    if (mobileOS === 'iOS') {
+        // Try different approaches for iOS
+        const approaches = [
+            () => window.location.href = mailtoLink,
+            () => window.location.assign(mailtoLink),
+            () => window.location.replace(mailtoLink),
+            () => {
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = mailtoLink;
+                document.body.appendChild(iframe);
+                setTimeout(() => document.body.removeChild(iframe), 1000);
+            }
+        ];
+        
+        let currentApproach = 0;
+        const tryNext = () => {
+            if (currentApproach < approaches.length) {
+                try {
+                    approaches[currentApproach]();
+                    currentApproach++;
+                } catch (e) {
+                    console.log('Approach failed:', e);
+                    setTimeout(tryNext, 500);
+                }
+            }
+        };
+        
+        tryNext();
+    } else if (mobileOS === 'Android') {
+        // Android-specific approach
+        try {
+            // Try intent-based opening first
+            const intentUrl = `intent://send?subject=${encodeURIComponent(mailtoLink.split('subject=')[1]?.split('&')[0] || '')}&body=${encodeURIComponent(mailtoLink.split('body=')[1] || '')}&type=text/plain#Intent;scheme=mailto;package=com.google.android.gm;end`;
+            window.location.href = intentUrl;
+        } catch (e) {
+            // Fallback to regular mailto
+            window.location.href = mailtoLink;
+        }
+    } else {
+        // Default approach for other mobile devices
+        window.location.href = mailtoLink;
+    }
+}
