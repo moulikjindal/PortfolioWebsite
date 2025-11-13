@@ -295,6 +295,35 @@
                 <div class="container">
                     <h2 class="section-title">Featured Projects</h2>
                     <div class="projects-grid">
+                        <!-- Project Card for Local Streamer -->
+                        <div class="project-card">
+                            <div class="project-image">
+                                <img src="images/localstreamer.png" alt="Local Streamer media server project">
+                            </div>
+                            <div class="project-content">
+                                <h3>Local Streamer</h3>
+                                <p>Local network media streaming tool to serve on-device video files over HTTP with byte-range seeking for smooth, seekable playback on TVs and phones. Streams high-quality videos over LAN without transferring entire files.</p>
+                                <ul class="project-bullets">
+                                    <li>FastAPI backend: upload, list, seekable stream endpoints, LAN IP discovery.</li>
+                                    <li>React (Vite) frontend: auto-detects host IP (API + WebRTC ICE), inline playback, QR code share.</li>
+                                    <li>WebRTC ICE gathering to improve reliable local discovery when mDNS/SSDP unavailable.</li>
+                                    <li>Generates shareable URLs + QR codes for instant playback on secondary devices.</li>
+                                    <li>CORS configured for secure cross-origin access within local network.</li>
+                                </ul>
+                                <div class="project-tech">
+                                    <span>FastAPI</span>
+                                    <span>Uvicorn</span>
+                                    <span>React</span>
+                                    <span>Vite</span>
+                                    <span>WebRTC</span>
+                                    <span>QR Code</span>
+                                    <span>CORS</span>
+                                </div>
+                                <div class="project-links">
+                                    <a href="https://github.com/moulikjindal/local-streamer" class="btn primary" target="_blank" rel="noopener noreferrer" aria-label="View Local Streamer source code on GitHub in a new tab">View Code</a>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Project Card for Resume Builder -->
                          <div class="project-card">
                             <div class="project-image">
@@ -303,14 +332,23 @@
                             </div>
                             <div class="project-content">
                                 <h3>Resume Builder</h3>
-                                <p>A fully client-side, ATS-friendly resume builder with a live editor, real-time preview, and one-click export options (PDF, TXT, JSON). Built with plain HTML, CSS, and JavaScript—no frameworks or build tools required.
-                                </p>
+                                <p>Client-side, ATS-aware resume editor with real-time split preview, dual PDF export modes (ATS text print & Visual html2pdf), plain text export, JSON backup/restore, and style customization—runs entirely in the browser (no backend / no build step).</p>
+                                <ul class="project-bullets">
+                                    <li>Live editor + instant preview keeps formatting aligned while you type.</li>
+                                    <li>Two PDF modes: ATS (selectable text via print) & Visual (html2pdf quality tiers).</li>
+                                    <li>Multiple exports: PDF, TXT, JSON backup; safe local persistence via localStorage.</li>
+                                    <li>Advanced style controls: fonts, sizing, line height, section & item spacing.</li>
+                                    <li>Structured sections with items, bullets & sub-bullets; reorder via Up/Down controls.</li>
+                                    <li>Auto right-aligned dates and optimized semantic layout for parsers.</li>
+                                    <li>Reset workflow with two-step confirmation to prevent accidental data loss.</li>
+                                </ul>
                                 <div class="project-tech">
                                     <!-- html, css javascript localstorage,html2pdf node libray -->
                                     <span>HTML5</span>
                                     <span>CSS3</span>
                                     <span>JavaScript</span>
-                                    <span>Node.js</span>
+                                    <span>localStorage</span>
+                                    <span>html2pdf</span>
                                 </div>
                                 <div class="project-links">
                                     <a href="https://resume-builder-ashy-delta.vercel.app/" class="btn secondary" target="_blank" rel="noopener noreferrer" aria-label="Open Resume Builder live demo in a new tab">Live
@@ -474,6 +512,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </section>
