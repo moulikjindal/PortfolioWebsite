@@ -19,7 +19,8 @@ A modern, responsive portfolio website built with HTML, CSS, and JavaScript.
 4. **Projects**: Featured projects with descriptions and tech stack
 5. **Experience**: Work history with timeline layout
 6. **Certifications**: Professional certifications and achievements
-7. **Contact**: Contact form and contact information
+7. **Links**: GitHub, LinkedIn, Portfolio, and project links
+8. **Contact**: Contact form and contact information
 
 ## Structure
 
